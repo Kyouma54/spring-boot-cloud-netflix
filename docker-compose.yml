@@ -1,0 +1,52 @@
+version: '2'
+services:
+  mysql:
+    extends:
+      file: microservice/src/main/docker/mysql.yml
+      service: mysql
+    networks:
+      - docker-network
+    container_name: microservice-mysql
+
+  microservice:
+    image: kyouma54/microservice
+    build:
+      context: .
+      dockerfile: microservice/src/main/docker/Dockerfile
+    depends_on:
+      - mysql
+      - registry
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://microservice-mysql:3306/microservice
+    networks:
+      - docker-network
+    ports: 
+      - 8081:8081
+  
+  gateway:
+    image: kyouma54/gateway
+    build:
+      context: .
+      dockerfile: gateway/src/main/docker/Dockerfile
+    networks:
+      - docker-network
+    depends_on: 
+      - registry
+    ports: 
+      - 8080:8080
+      
+  registry:
+    image: kyouma54/eureka-registry
+    build:
+      context: .
+      dockerfile: registry/src/main/docker/Dockerfile
+    networks:
+      - docker-network
+    ports: 
+      - 8761:8761
+
+networks:
+  docker-network:
+    
+volumes:
+  database-mysql:

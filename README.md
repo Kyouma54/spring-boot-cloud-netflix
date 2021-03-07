@@ -6,9 +6,10 @@
 
 ## Desenvolvimento
 
-Para iniciar a aplicação execute na pasta do projeto:
+Para iniciar a aplicação execute:
 
 ```
-sudo docker-compose up -d
-
+sudo docker-compose -f ./microservice/src/main/docker/mysql.yml up
+./mvnw clean package em microservice, gateway e registry
+./mvnw em microservice, gateway e registry
 ```
